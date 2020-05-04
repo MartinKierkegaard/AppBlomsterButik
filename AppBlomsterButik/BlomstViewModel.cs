@@ -54,10 +54,12 @@ namespace AppBlomsterButik
             OC_blomster.Add(oBlomst);
         }
 
-        public void SletBlomst()
+        private void SletBlomst()
         {
             OC_blomster.Remove(SelectedOrdreBlomst);
         }
+
+
 
 
     }
