@@ -38,7 +38,7 @@ namespace AppBlomsterButik
             OC_blomster.Add(new OrdreBlomst("Tulipan", 2, "Gul"));
 
             AddNyBlomst = new RelayCommand(AddBlomst);
-            SletSelectedBlomst = new RelayCommand(SletBlomst);
+            SletSelectedBlomst = new RelayCommand(SletBlomst,canDeleteBlomsterListe);
 
             SelectedOrdreBlomst = new OrdreBlomst();
 
@@ -52,11 +52,19 @@ namespace AppBlomsterButik
             OrdreBlomst oBlomst = new OrdreBlomst(NavnBlomst, AntalBlomst, FarveBlomst);
 
             OC_blomster.Add(oBlomst);
+
+            SletSelectedBlomst.RaiseCanExecuteChanged();
         }
 
         private void SletBlomst()
         {
             OC_blomster.Remove(SelectedOrdreBlomst);
+            SletSelectedBlomst.RaiseCanExecuteChanged();
+        }
+
+        private bool canDeleteBlomsterListe()
+        {
+            return OC_blomster.Count > 0;
         }
 
 
