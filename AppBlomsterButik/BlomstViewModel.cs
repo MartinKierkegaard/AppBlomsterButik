@@ -20,7 +20,13 @@ namespace AppBlomsterButik
         public int AntalBlomst { get => antalBlomst; set => antalBlomst = value; }
         public string FarveBlomst { get => farveBlomst; set => farveBlomst = value; }
 
+
+        public OrdreBlomst SelectedOrdreBlomst { get; set; }
+
+
         public RelayCommand AddNyBlomst { get; set; }
+
+        public RelayCommand SletSelectedBlomst { get; set; }
 
         public BlomstViewModel()
         {
@@ -32,6 +38,9 @@ namespace AppBlomsterButik
             OC_blomster.Add(new OrdreBlomst("Tulipan", 2, "Gul"));
 
             AddNyBlomst = new RelayCommand(AddBlomst);
+            SletSelectedBlomst = new RelayCommand(SletBlomst);
+
+            SelectedOrdreBlomst = new OrdreBlomst();
 
         }
 
@@ -43,6 +52,11 @@ namespace AppBlomsterButik
             OrdreBlomst oBlomst = new OrdreBlomst(NavnBlomst, AntalBlomst, FarveBlomst);
 
             OC_blomster.Add(oBlomst);
+        }
+
+        public void SletBlomst()
+        {
+            OC_blomster.Remove(SelectedOrdreBlomst);
         }
 
 
