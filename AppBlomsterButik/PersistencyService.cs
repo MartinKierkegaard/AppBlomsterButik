@@ -48,7 +48,7 @@ namespace AppBlomsterButik
         /// <summary>
         /// Henter en json fil fra disken 
         /// </summary>
-        public static async Task<List<OrdreBlomst>> HentDataFraDiskAsync()
+        public static async Task<List<OrdreBlomst>> HentDataFraDiskAsyncPS()
         {
             StorageFolder localfolder = ApplicationData.Current.LocalFolder;
             StorageFile file = await localfolder.GetFileAsync(filnavn);

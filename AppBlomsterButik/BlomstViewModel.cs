@@ -139,7 +139,7 @@ namespace AppBlomsterButik
         {
             OC_blomster.Clear();
             List<OrdreBlomst> nyListe= new List<OrdreBlomst>();
-            nyListe = await PersistencyService.HentDataFraDiskAsync();
+            nyListe = await PersistencyService.HentDataFraDiskAsyncPS();
 
             foreach (var blomst in nyListe)
             {
