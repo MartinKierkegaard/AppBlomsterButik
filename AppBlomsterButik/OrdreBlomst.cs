@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AppBlomsterButik
 {
-   public class OrdreBlomst
+   public class OrdreBlomst : INotifyPropertyChanged
     {
 		private string navn;
 
 		public string Navn
 		{
 			get { return navn; }
-			set { navn = value; }
+			set { navn = value;
+				OnPropertyChanged();
+					}
 		}
 
 		private int antal;
@@ -21,15 +25,30 @@ namespace AppBlomsterButik
 		public int Antal
 		{
 			get { return antal; }
-			set { antal = value; }
+			set { antal = value;
+				OnPropertyChanged();
+			}
 		}
 
 		private string farve;
 
+		public event PropertyChangedEventHandler PropertyChanged;
+
+
+
+
+
+		public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
 		public string Farve
 		{
 			get { return farve; }
-			set { farve = value; }
+			set { farve = value;
+				OnPropertyChanged();
+			}
 		}
 
 		public OrdreBlomst(string navn,int antal , string farve)

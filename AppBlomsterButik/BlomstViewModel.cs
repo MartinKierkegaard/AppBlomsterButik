@@ -1,10 +1,12 @@
 ﻿using BlomstViewModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace AppBlomsterButik
 {
@@ -21,12 +23,28 @@ namespace AppBlomsterButik
         public string FarveBlomst { get => farveBlomst; set => farveBlomst = value; }
 
 
+        private string jsonBlomster;
+
+        public string JsonBlomster
+        {
+            get { return jsonBlomster; }
+            set { jsonBlomster = value; }
+        }
+
+        StorageFolder localfolder = null;
+
+        private readonly string filnavn = "blomster1.json";
+
         public OrdreBlomst SelectedOrdreBlomst { get; set; }
 
 
         public RelayCommand AddNyBlomst { get; set; }
 
         public RelayCommand SletSelectedBlomst { get; set; }
+
+        public RelayCommand GemData { get; set; }
+
+        public RelayCommand HentData { get; set; }
 
         public BlomstViewModel()
         {
@@ -42,7 +60,14 @@ namespace AppBlomsterButik
 
             SelectedOrdreBlomst = new OrdreBlomst();
 
+            localfolder = ApplicationData.Current.LocalFolder;
+
+            GemData = new RelayCommand(GemDataTilDiskAsync);
+
+            HentData = new RelayCommand(HentDataFraDiskAsync);
+            DanData();
         }
+
 
         /// <summary>
         /// metode til at tilføje en ny ordreblomst til listen
@@ -67,8 +92,66 @@ namespace AppBlomsterButik
             return OC_blomster.Count > 0;
         }
 
+        /// <summary>
+        /// Giver mig Jsonformat for OC_blomster objektet
+        /// </summary>
+        /// <returns></returns>
+        private string GetJson()
+        {
+            string json = JsonConvert.SerializeObject(OC_blomster);
+            return json;
+        }
+
+        /// <summary>
+        /// Gemmer json data fra liste i localfolder
+        /// </summary>
+        private async void GemDataTilDiskAsync()
+        {
+            this.jsonBlomster = GetJson();
+
+            StorageFile file = await localfolder.CreateFileAsync(filnavn, CreationCollisionOption.ReplaceExisting);
+
+            await FileIO.WriteTextAsync(file, this.jsonBlomster);
+
+           // await FileIO.WriteTextAsync(file, GetJson());
+
+        }
+
+        /// <summary>
+        /// metode som modtager en string af json og deserialiserer til objekter af OrdreBlomst
+        /// </summary>
+        /// <param name="jsonText"></param>
+        public void IndsætJson(string jsonText)
+        {
+            List<OrdreBlomst> nyListe =  JsonConvert.DeserializeObject<List<OrdreBlomst>>(jsonText);
+
+            foreach (var blomst in nyListe)
+            {
+                this.OC_blomster.Add(blomst);
+            }
+        }
+
+        /// <summary>
+        /// Henter en json fil fra disken 
+        /// </summary>
+        private async void HentDataFraDiskAsync()
+        {
+            StorageFile file = await localfolder.GetFileAsync(filnavn);
+            string jsonText = await FileIO.ReadTextAsync(file);
+            this.OC_blomster.Clear();
+            IndsætJson(jsonText);
+        }
+
+        private void DanData()
+        {
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    var blomst = new OrdreBlomst("tulipan", i, "blå");
+            //    OC_blomster.Add(blomst);
+            //}
 
 
+        }
 
     }
 }
