@@ -109,37 +109,49 @@ namespace AppBlomsterButik
         {
             this.jsonBlomster = GetJson();
 
-            StorageFile file = await localfolder.CreateFileAsync(filnavn, CreationCollisionOption.ReplaceExisting);
+            StorageFile file =  await localfolder.CreateFileAsync(filnavn, CreationCollisionOption.ReplaceExisting);
 
             await FileIO.WriteTextAsync(file, this.jsonBlomster);
 
-           // await FileIO.WriteTextAsync(file, GetJson());
-
+            // await FileIO.WriteTextAsync(file, GetJson());
+            SletSelectedBlomst.RaiseCanExecuteChanged();
         }
 
-        /// <summary>
-        /// metode som modtager en string af json og deserialiserer til objekter af OrdreBlomst
-        /// </summary>
-        /// <param name="jsonText"></param>
-        public void IndsætJson(string jsonText)
-        {
-            List<OrdreBlomst> nyListe =  JsonConvert.DeserializeObject<List<OrdreBlomst>>(jsonText);
+        ///// <summary>
+        ///// metode som modtager en string af json og deserialiserer til objekter af OrdreBlomst
+        ///// </summary>
+        ///// <param name="jsonText"></param>
+        //private void IndsætJson(string jsonText)
+        //{
+        //    List<OrdreBlomst> nyListe =  JsonConvert.DeserializeObject<List<OrdreBlomst>>(jsonText);
 
-            foreach (var blomst in nyListe)
-            {
-                this.OC_blomster.Add(blomst);
-            }
-        }
+        //    foreach (var blomst in nyListe)
+        //    {
+        //        this.OC_blomster.Add(blomst);
+        //    }
+        //    SletSelectedBlomst.RaiseCanExecuteChanged();
+        //}
 
         /// <summary>
         /// Henter en json fil fra disken 
         /// </summary>
         private async void HentDataFraDiskAsync()
         {
-            StorageFile file = await localfolder.GetFileAsync(filnavn);
-            string jsonText = await FileIO.ReadTextAsync(file);
-            this.OC_blomster.Clear();
-            IndsætJson(jsonText);
+            OC_blomster.Clear();
+            List<OrdreBlomst> nyListe= new List<OrdreBlomst>();
+            nyListe = await PersistencyService.HentDataFraDiskAsync();
+
+            foreach (var blomst in nyListe)
+            {
+                this.OC_blomster.Add(blomst);
+            }
+            SletSelectedBlomst.RaiseCanExecuteChanged();
+
+            
+            //StorageFile file = await localfolder.GetFileAsync(filnavn);
+            //string jsonText = await FileIO.ReadTextAsync(file);
+            //this.OC_blomster.Clear();
+            //IndsætJson(jsonText);
         }
 
         private void DanData()
